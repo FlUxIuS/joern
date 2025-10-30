@@ -22,7 +22,7 @@ object FileUtils {
   /** checks if the given jar contains the given entry in the root directory
     */
   def jarContainsEntryInRoot(jar: File, entry: String): Boolean = {
-    val zipFs = FileSystems.newFileSystem(jar.toPath)
+    val zipFs = FileSystems.newFileSystem(jar.toPath, null: ClassLoader)
     val result = zipFs.getRootDirectories.asScala.exists { zipRootDir =>
       Files.list(zipRootDir).iterator.asScala.exists(_.getFileName.toString == entry)
     }
@@ -32,7 +32,7 @@ object FileUtils {
 
   /** removes the given entry from the given jar, only at root level */
   def removeJarEntryFromRoot(jar: File, entry: String): Unit = {
-    val zipFs = FileSystems.newFileSystem(jar.toPath)
+    val zipFs = FileSystems.newFileSystem(jar.toPath, null: ClassLoader)
     zipFs.getRootDirectories.forEach { zipRootDir =>
       Files.list(zipRootDir).filter(_.getFileName.toString == entry).forEach(Files.delete(_))
     }
